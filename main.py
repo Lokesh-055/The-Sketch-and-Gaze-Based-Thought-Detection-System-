@@ -57,9 +57,9 @@ class App:
         self.user_number = "+917200460207"
 
         self.notifier = Notifier(
-            account_sid="AC15cf95fe274d1930f453c246202fae30",
-            auth_token="a6fb53c0e3e5c2ec62f2315ea0a44fcd",
-            from_number="+13254250259"
+            account_sid="xxxxxxxxxxxxxxxx",
+            auth_token="xxxxxxxxxxxxxx",
+            from_number="+xxxxxxxxx"
         )
 
         # start gaze updates
@@ -125,3 +125,4 @@ if __name__ == "__main__":
     root = tk.Tk()
     App(root)
     root.mainloop()
+
