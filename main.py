@@ -49,9 +49,9 @@ class App:
         self.user_number = "+917200460207"
 
         self.notifier = Notifier(
-            account_sid="AC15cf95fe274d1930f453c246202fae30",
-            auth_token="bbe811019be342f65537007973566171",
-            from_number="+13254250259"
+            account_sid=None,
+            auth_token=None,
+            from_number=None
         )
 
         self.update_gaze()
