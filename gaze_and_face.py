@@ -17,6 +17,7 @@ class GazeAndFace:
 
         if result.multi_face_landmarks:
             self.state = "Focused"
+
             for face in result.multi_face_landmarks:
                 for lm in face.landmark:
                     h, w, _ = frame.shape
