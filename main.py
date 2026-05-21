@@ -6,20 +6,15 @@ from gaze_and_face import GazeAndFace
 from thought_engine import ThoughtEngine
 from notifier import Notifier
 
-
 class App:
     def __init__(self, root):
         self.root = root
         self.root.title("Sketch & Gaze Based Thought Detection")
 
-        # ================= CANVAS =================
         self.canvas_size = 300
-        self.canvas = tk.Canvas(
-            root,
-            bg="white",
-            width=self.canvas_size,
-            height=self.canvas_size
-        )
+        self.canvas = tk.Canvas(root, bg="white",
+                                width=self.canvas_size,
+                                height=self.canvas_size)
         self.canvas.pack(side=tk.LEFT)
 
         self.image = Image.new("RGB", (self.canvas_size, self.canvas_size), "white")
@@ -31,7 +26,6 @@ class App:
         self.canvas.bind("<B1-Motion>", self.draw_sketch)
         self.canvas.bind("<ButtonRelease-1>", self.reset)
 
-        # ================= PANEL =================
         panel = tk.Frame(root)
         panel.pack(side=tk.RIGHT, padx=10)
 
@@ -44,40 +38,30 @@ class App:
         self.thought_label = tk.Label(panel, text="Thought:")
         self.thought_label.pack(pady=10)
 
-        tk.Button(panel, text="Predict", command=self.on_predict).pack(fill="x")
-        tk.Button(panel, text="Clear", command=self.clear).pack(fill="x")
-        tk.Button(panel, text="Exit", command=self.exit).pack(fill="x")
+        tk.Button(panel, text="Predict", command=self.on_predict).pack()
+        tk.Button(panel, text="Clear", command=self.clear).pack()
+        tk.Button(panel, text="Exit", command=self.exit).pack()
 
-        # ================= MODULES =================
         self.sketch = SketchRecognizer()
         self.gaze = GazeAndFace()
         self.thought_engine = ThoughtEngine()
 
-        # ================= NOTIFICATION =================
         self.user_number = "+917200460207"
 
         self.notifier = Notifier(
-            account_sid="xxxxxxxxxxxxxxxx",
-            auth_token="xxxxxxxxxxxxxx",
-            from_number="+xxxxxxxxx"
+            account_sid="AC15cf95fe274d1930f453c246202fae30",
+            auth_token="bbe811019be342f65537007973566171",
+            from_number="+13254250259"
         )
 
-        # start gaze updates
         self.update_gaze()
 
-    # ================= DRAW =================
     def draw_sketch(self, event):
-        if self.last_x is not None:
-            self.canvas.create_line(
-                self.last_x, self.last_y,
-                event.x, event.y,
-                width=3
-            )
-            self.draw.line(
-                (self.last_x, self.last_y, event.x, event.y),
-                fill="black",
-                width=3
-            )
+        if self.last_x:
+            self.canvas.create_line(self.last_x, self.last_y,
+                                    event.x, event.y, width=3)
+            self.draw.line((self.last_x, self.last_y, event.x, event.y),
+                           fill="black", width=3)
         self.last_x = event.x
         self.last_y = event.y
 
@@ -92,10 +76,11 @@ class App:
         self.shape_label.config(text="Shape:")
         self.thought_label.config(text="Thought:")
 
-    # ================= PREDICT =================
     def on_predict(self):
         shape, conf = self.sketch.predict(self.image)
+
         gaze_state = self.gaze.state
+
         thought = self.thought_engine.detect(shape, gaze_state)
 
         self.shape_label.config(text=f"Shape: {shape} ({conf:.2f})")
@@ -108,21 +93,16 @@ class App:
                 "You seem distracted while drawing. Please refocus on the task."
             )
 
-    # ================= GAZE UPDATE =================
     def update_gaze(self):
         state = self.gaze.update()
         self.gaze_label.config(text=f"Gaze: {state}")
         self.root.after(30, self.update_gaze)
 
-    # ================= EXIT =================
     def exit(self):
         self.gaze.release()
         self.root.destroy()
 
-
-# ================= MAIN =================
 if __name__ == "__main__":
     root = tk.Tk()
     App(root)
     root.mainloop()
-
